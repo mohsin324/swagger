@@ -1,0 +1,23 @@
+openapi: 3.0.0
+info:
+  title: My API Documentation
+  version: 1.0.0
+  description: Standalone Swagger API documentation
+servers:
+  - url: http://localhost:5000
+paths:
+  /api/example:
+    get:
+      summary: Get an example
+      description: Retrieve an example response
+      responses:
+        200:
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Hello, World!"
