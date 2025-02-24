@@ -1,23 +1,304 @@
 openapi: 3.0.0
 info:
-  title: My API Documentation
+  title: Limit Enhancement 
+  description: API's documentation
   version: 1.0.0
-  description: Standalone Swagger API documentation
+ 
 servers:
-  - url: http://localhost:5000
+  - url: http://ip:3000/api/v1
+    description: IP will be replace with Local server address
+ 
+tags:
+  - name: Limit Enhancement
+    description: This docs provide the demo of all the three limit enhancement services Inquiry, Status, Update.
+  
+components:
+  schemas:
+    Limit_Status_Request:
+      type: object
+      required:
+        - PAN
+        - PanExpiry
+        - CNIC
+        - STAN
+        - ANI
+        - CALLID
+        - AgentID
+      properties:
+        PAN:
+          type: string
+          description: Debit card number
+        PanExpiry:
+          type: string
+          description: Debit card expiry date
+        CNIC:
+          type: string
+          description: National Identity card number
+        STAN:
+          type: string
+          description: 6 digits random number
+        ANI:
+          type: string
+          description: Mobile Number
+        CallID:
+          type: string
+          description: IVR unique call id
+        AgentID:
+          type: string
+          description: PBO id
+      example:
+        PAN: "4762150027186***"
+        PanExpiry: "20270228"
+        CNIC: "3520116580***"
+        STAN: "345122"
+        ANI: "03248700000"
+        CallID: "90000005c80711b229b040000000000"
+        AgentID: "IVR"
+    Limit_Status_Response:
+      type: object
+      properties:
+        message:
+          type: string
+          description: Success | Failure
+        ResponseCode:
+          type: string
+          description: "00"
+        ResponseDesc:
+          type: string
+          description: "OK"
+        ResponseDescription:
+          type: object
+          description: it will return transaction status either true or false
+      example:
+        message: Success
+        ResponseCode: "00"
+        ResponseDesc: "OK"
+        ResponseDescription:
+          Enable_POS: true
+          Enable_FT: false
+          Enable_WithDrawal: true
+          
+    Limit_Inquiry_Request:
+      type: object
+      required:
+        - TransactionName
+        - PAN
+        - PanExpiry
+        - CNIC
+        - STAN
+        - ANI
+        - CALLID
+        - AgentID
+      properties:
+        TransactionName:
+          type: string
+          description: TransactionName must be WITHDRAWAL, PURCHASE, TRANSFER.
+        PAN:
+          type: string
+          description: Debit card number
+        PanExpiry:
+          type: string
+          description: Debit card expiry date
+        CNIC:
+          type: string
+          description: National Identity card number
+        STAN:
+          type: string
+          description: 6 digits unique number
+        CallID: 
+          type: string
+          description: IVR unique call id
+        AgentID:
+          type: string
+          description: PBO id
+      example:
+        TransactionName: "WITHDRAWAL"
+        PAN: "4762150027186***"
+        PanExpiry: "20270228"
+        CNIC: "3520116580***"
+        STAN: "345123"
+        CallID: "000005c80711b229b04000000"
+        AgentID: "IVR"
+ 
+    Limit_Inquiry_Response:
+      type: object
+      properties:
+        message:
+          type: string
+          description: Success | Failure
+        ResponseCode:
+          type: string
+          description: "00"
+        ResponseDesc:
+          type: string
+          description: "OK"
+        ResponseDescription:
+          type: object
+          description: it will return transaction total amount to be enhanced and fee amount in PKR.
+      example:
+        message: Success
+        ResponseCode: "00"
+        ResponseDesc: "OK"
+        ResponseDescription:
+          EnhancedAmount: "700000"
+          Fee: "20"
+ 
+    Limit_Update_Request:
+      type: object
+      required:
+        - PAN
+        - PanExpiry
+        - AccountNumber
+        - TransactionName
+        - CNIC
+        - Amount
+        - Fee
+        - STAN
+        - ANI
+        - CALLID
+        - AgentID
+        - EmailAddress
+      properties:
+        PAN:
+          type: string
+          description: Debit card number
+        PanExpiry:
+          type: string
+          description: Debit card expiry date
+        AccountNumber:
+          type: string
+          description: Account number
+        TransactionName: 
+          type: string
+          description: TransactionName must be WITHDRAWAL, PURCHASE, TRANSFER.
+        CNIC:
+          type: string
+          description: National Identity card number
+        Amount: 
+          type: string
+          description: Amount to be enhanced, which was gotten from limit inquiry API's
+        Fee: 
+          type: string
+          description: Fee, which was gotten from limit inquiry API's
+        STAN: 
+          type: string
+          description: 6 digits unique number
+        ANI:
+          type: string
+          description: Mobile number
+        CallID:
+          type: string
+          description: IVR call Id 
+        AgentID:
+          type: string
+          description: PBO Id
+        EmailAddress:
+          type: string
+          description: caller EmailAddress
+
+      example:
+        PAN: "4762150027186***"
+        PanExpiry: "20270131"
+        AccountNumber: "05400010000"
+        TransactionName: "WITHDRAWAL"
+        CNIC: "3520014884***"
+        Amount: "700000"
+        Fee: "20"
+        STAN: "567876"
+        ANI: "03248731***"
+        CallID: "0290000005c80711b29b04"
+        AgentID: "IVR"
+        EmailAddress: "XYz@gmail.com"
+
+    Limit_Update_Response:
+      type: object
+      properties:
+        message:
+          type: string
+          description: Success | Failure
+        ResponseCode:
+          type: string
+          description: "00"
+        ResponseDesc:
+          type: string
+          description: "OK"
+        ResponseDescription:
+          type: string
+          description: response details whether limit enhancement request proceed successfully or not 
+      example:
+        message: Success
+        ResponseCode: "00"
+        ResponseDesc: OK
+        ResponseDescription: ATM WITHDRAWAL limit Updated Successfully
+ 
 paths:
-  /api/example:
-    get:
-      summary: Get an example
-      description: Retrieve an example response
+  /ATMLimitStatus:
+    post:
+      summary: Implemented swagger in rest API's
+      tags:
+        - Limit_Status_API
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Limit_Status_Request'
       responses:
         200:
-          description: Successful response
+          description: Successfully executed request
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                    example: "Hello, World!"
+                $ref: '#/components/schemas/Limit_Status_Response'
+        400:
+          description: Bad Request
+        500:
+          description: Internal server error
+ 
+  /ATMLimitInquiry:
+    post:
+      summary: it will return total enhanced limit and fee as per SOP
+      tags:
+        - Limit_INQUIRY_API
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Limit_Inquiry_Request'
+      responses:
+        200:
+          description: Successfully retrieved the atm limit enhanced amount, fee
+          content:
+            application/json:
+              schema:
+                  $ref: '#/components/schemas/Limit_Inquiry_Response'
+        400:
+          description: Bad request
+        500:
+          description: Internal server error
+ 
+  /ATMLimitUpdate:
+    post:
+      summary: return response whether limit updated successfully
+      tags:
+        - Limit_UPDATE_API
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Limit_Update_Request'
+      responses:
+        200:
+          description: Successfully updated the request
+          content:
+            application/json:
+              schema:
+                  $ref: '#/components/schemas/Limit_Update_Response'
+        400:
+          description: Bad request
+        500:
+          description: Internal server error
+ 
+ 
