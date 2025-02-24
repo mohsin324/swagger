@@ -230,6 +230,68 @@ components:
         ResponseCode: "00"
         ResponseDesc: OK
         ResponseDescription: ATM WITHDRAWAL limit Updated Successfully
+    SMS_Request:
+      type: object
+      required:
+        - TransmissionDateTime
+        - STAN
+        - ANI
+        - DeliveryChannelType
+        - AgentID
+        - CustomerIdentification
+        - MobileNumber
+        - Message
+      properties:
+        TransmissionDateTime:
+          type: string
+          description: Tran date and time
+        STAN:
+          type: string
+          description: 6 digits random number
+        ANI:
+          type: string
+          description: Mobile Number
+        DeliveryChannelType:
+          type: string
+          description: DeliveryChannelType must be 01
+        AgentID:
+          type: string
+          description: PBO id
+        CustomerIdentification:
+          type: string
+          description: National Identity card number
+        MobileNumber:
+          type: string
+          description: IVR unique call id
+        Message: 
+          type: string
+          description: value to this parameter must be PURCHASE, WITHDRAWAL, TRANSFER.
+      example:
+        TransmissionDateTime: "220220230551"
+        STAN: "345122"
+        ANI: "03248700000"
+        DeliveryChannelType: "01"
+        AgentID: "IVR"
+        CustomerIdentification: "3520116580***"
+        MobileNumber: "03248700000"
+        Message: PURCHASE
+    SMS_Response:
+      type: object
+      properties:
+        success:
+          type: boolean
+          description: true | false
+        message:
+          type: string
+          description: SMS Sent Successfully
+        data:
+          type: object
+          description: it will return transaction status either ok or not
+      example:
+        success: true
+        message: "SMS Sent Successfully"
+        data:
+          return: OK
  
 paths:
   /ATMLimitStatus:
@@ -296,6 +358,28 @@ paths:
             application/json:
               schema:
                   $ref: '#/components/schemas/Limit_Update_Response'
+        400:
+          description: Bad request
+        500:
+          description: Internal server error
+  /sendSMSNew:
+    post:
+      summary: return response whether sms sent successfully
+      tags:
+        - SMS_Sending_API
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SMS_Request'
+      responses:
+        200:
+          description: Successfully updated the request
+          content:
+            application/json:
+              schema:
+                  $ref: '#/components/schemas/SMS_Response'
         400:
           description: Bad request
         500:
