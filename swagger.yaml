@@ -96,6 +96,9 @@ components:
         PAN:
           type: string
           description: Debit card number
+        ANI:
+          type: string
+          description: Mobile number
         PanExpiry:
           type: string
           description: Debit card expiry date
@@ -119,6 +122,7 @@ components:
         STAN: "345123"
         CallID: "000005c80711b229b04000000"
         AgentID: "IVR"
+        ANI: "03018239***"
  
     Limit_Inquiry_Response:
       type: object
